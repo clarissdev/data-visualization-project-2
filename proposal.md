@@ -14,24 +14,41 @@ This project presents an exciting opportunity to apply the knowledge acquired in
 
 ## Project Timeline
 
-### Week 1:
+### Week 1 (12/04 - 14/04): Team Introduction and Brainstorming
+Brainstorm project ideas.
 
-- Research and finalize the list of machine learning algorithms to include, emphasizing MLP, KNN, and Logistic Regression.
-- Set up the project structure and environment, incorporating frontend frameworks and libraries for visualization.
+### Week 2 (15/04 - 21/04): Proposal Development and Repository Setup
+- Develop a detailed project proposal outlining the goals, key features, and the technologies to be used.
+- Set up the project repository with initial documentation and code structure.
 
-### Week 2 + 3:
+### Week 3 (22/04 - 28/04): Proposal Submission
+- Finalize and submit project proposal.  Ensure all team members are aligned with the project plan and roles.
 
-- Begin frontend implementation for basic algorithm visualizations, focusing on clear presentation and interactive features.
+### Week 4 (29/04 - 05/05): Peer Review and Initial Development
+- Conduct peer reviews on other proposals.
+- Start basic development: 
+  - Set up the R Shiny environment.
+  - Begin developing the user interface components.
+- Begin frontend implementation for basic algorithm visualizations
 - Explore and experiment with visualization techniques learned in the Data Visualization course.
 
-### Week 4:
-
+### Week 5 (06/05 - 12/05): Response to Reviews and Continued Development
+- Respond to peer review feedback and submit any required updates.
 - Complete frontend implementation for basic algorithm visualizations, ensuring alignment with principles of effective visualization.
-- Conduct comprehensive testing and bug fixing to ensure application stability.
-  Optimize performance and accessibility for various devices and screen sizes.
+- Receive instructor feedback and incorporate it into development.
 
-### Week 5:
+### Week 6 (13/05 - 19/05): Advanced Feature Integration and Testing
+- Implement advanced features (parameter modifications, algorithm selection).
+- Begin integration testing to ensure all parts work together smoothly.
+- Conduct comprehensive testing and bug fixing to ensure application stability. Optimize performance and accessibility for various devices and screen sizes.
 
+### Week 7 (20/05 - 26/05): Final Development and User Testing
 - Finalize documentation and prepare for project deployment.
 - Conduct user acceptance testing and gather feedback for final adjustments.
 - Prepare project presentation and demo to showcase application features and demonstrate the application of data visualization principles.
+
+### Week 8 (27/05 - 02/06): Finalization and Submission
+- Finalize the project report and presentation.
+- Ensure that all documentation is complete and up-to-date.
+- Prepare and rehearse the presentation.
+- Submit the final project deliverables.
