@@ -39,10 +39,10 @@ Brainstorm project ideas. (All)
 
 - Conduct peer reviews on other proposals. (All)
 - Start basic development:
-  - Set up the R Shiny environment. (Dev)
-  - Begin developing the user interface components. (Dev)
-- Begin frontend implementation for basic algorithm visualizations (Dev)
-- Explore and experiment with visualization techniques learned in the Data Visualization course. (Tester)
+  - Set up the R Shiny environment. (Thanh)
+  - Begin developing the user interface components. (Thanh)
+- Begin frontend implementation for basic algorithm visualizations (Dat)
+- Explore and experiment with visualization techniques learned in the Data Visualization course. (Dat)
 
 ### Week 5 (06/05 - 12/05): Response to Reviews and Continued Development
 
