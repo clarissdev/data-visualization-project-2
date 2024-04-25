@@ -1,6 +1,6 @@
 # COMP4010 - Data Visualization - Project 2 - Proposal
 
-**Team members: Dinh Van Thanh, Do Huu Dat, Ha Phuong Thao**
+**Group G: Dinh Van Thanh, Do Huu Dat, Ha Phuong Thao**
 
 ## High-level Goal
 
@@ -10,9 +10,9 @@ Our goal in this project is to develop an interactive application that visualize
 
 In this project, we aim to demonstrate the principles and behaviors of machine learning algorithms with visualization. Our target algorithms in this project include, but not limited to, Multilayer Perceptron (MLP), K-Nearest Neighbors (KNN), Logistic Regression.
 
-This project presents an exciting opportunity to apply the knowledge acquired in the Data Visualization course to a real-world application. In addition to demonstrate accurately and clearly the behavior of each algorithm, ensuring the quality of the visualization itself is also our main goal. By leveraging the visualization techniques such as annotation and
+This project presents an exciting opportunity to apply the knowledge acquired in the Data Visualization course to a real-world application. In addition to demonstrate accurately and clearly the behavior of each algorithm, ensuring the quality of the visualization itself is also our main goal. By leveraging the visualization techniques such as annotation and following the POUR principles while developing application, this application is expected to provide great user-experience and usability to all individuals, including those with disabilities.
 
-By implementing the application with R-shiny, we really hope to bring a great learning experience to user. This R package includes essential modules supporting visualization and interactivity, aiming to provides an elegant and powerful web framework for building web applications
+By implementing the application with R-shiny, we really hope to bring a great learning experience to user. This R package includes essential modules supporting visualization and interactivity, aiming to provides an elegant and powerful web framework for building web applications.
 
 ## Project Timeline
 
