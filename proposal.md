@@ -4,36 +4,51 @@
 
 ## High-level Goal
 
-Our goal in this project is to develop an interactive application that visualizes machine learning algorithm, aiming to create intuitive representations to leverage the learning experience with machine learning.
+Our goal in this project is to make machine learning more inclusive. We hope to be able to leverage the learning experience with machine learning by replicating a simple machine learning pipeline and creating intuitive understanding.
 
 ## Project Description
 
-In this project, we aim to demonstrate the principles and behaviors of machine learning algorithms with visualization. Our target algorithms in this project include, but not limited to, Multilayer Perceptron (MLP), K-Nearest Neighbors (KNN), Logistic Regression.
+Our project aims to offer a user-friendly simulation of a machine learning pipeline using R Shiny. Through interactive modules, users can upload datasets of their choices, preprocess data, select and train machine learning algorithms, and evaluate model performance. This platform provides a hands-on learning experience, making machine learning concepts accessible to a wide audience. By democratizing access to machine learning education and experimentation, our project equips users with valuable skills for data-driven decision-making in various industries.
 
-This project presents an exciting opportunity to apply the knowledge acquired in the Data Visualization course to a real-world application. In addition to demonstrate accurately and clearly the behavior of each algorithm, ensuring the quality of the visualization itself is also our main goal. By leveraging the visualization techniques such as annotation and following the POUR principles while developing application, this application is expected to provide great user-experience and usability to all individuals, including those with disabilities.
-
-By implementing the application with R-shiny, we really hope to bring a great learning experience to user. This R package includes essential modules supporting visualization and interactivity, aiming to provides an elegant and powerful web framework for building web applications.
+This project presents an exciting opportunity to apply the knowledge acquired in the Data Visualization course to a real-world application. The motivation behind this initiative is to provide a user-friendly, visual interface where users, regardless of their technical background, can experiment with and visualize how different machine learning algorithms process data and yield predictions. By simplifying the complexity typically associated with setting up, coding, and tuning machine learning models, this platform seeks to bridge the knowledge gap and make these powerful tools more accessible to non-specialists, including students, educators, and professionals in non-technical fields. In this project, we aim to introduce the simplest machine learning algorithms with visualization, which include, but not limited to, Linear Regression, Multilayer Perceptron (MLP), K-Nearest Neighbors (KNN), Logistic Regression.
 
 ## Project Timeline
 
-### Week 1:
+### Week 1 (12/04 - 14/04): Team Introduction and Brainstorming
+Brainstorm project ideas.
 
-- Research and finalize the list of machine learning algorithms to include, emphasizing MLP, KNN, and Logistic Regression.
-- Set up the project structure and environment, incorporating frontend frameworks and libraries for visualization.
+### Week 2 (15/04 - 21/04): Proposal Development and Repository Setup
+- Develop a detailed project proposal outlining the goals, key features, and the technologies to be used.
+- Set up the project repository with initial documentation and code structure.
 
-### Week 2 + 3:
+### Week 3 (22/04 - 28/04): Proposal Submission
+- Finalize and submit project proposal.  Ensure all team members are aligned with the project plan and roles.
 
-- Begin frontend implementation for basic algorithm visualizations, focusing on clear presentation and interactive features.
+### Week 4 (29/04 - 05/05): Peer Review and Initial Development
+- Conduct peer reviews on other proposals.
+- Start basic development: 
+  - Set up the R Shiny environment.
+  - Begin developing the user interface components.
+- Begin frontend implementation for basic algorithm visualizations
 - Explore and experiment with visualization techniques learned in the Data Visualization course.
 
-### Week 4:
-
+### Week 5 (06/05 - 12/05): Response to Reviews and Continued Development
+- Respond to peer review feedback and submit any required updates.
 - Complete frontend implementation for basic algorithm visualizations, ensuring alignment with principles of effective visualization.
-- Conduct comprehensive testing and bug fixing to ensure application stability.
-  Optimize performance and accessibility for various devices and screen sizes.
+- Receive instructor feedback and incorporate it into development.
 
-### Week 5:
+### Week 6 (13/05 - 19/05): Advanced Feature Integration and Testing
+- Implement advanced features (parameter modifications, algorithm selection).
+- Begin integration testing to ensure all parts work together smoothly.
+- Conduct comprehensive testing and bug fixing to ensure application stability. Optimize performance and accessibility for various devices and screen sizes.
 
+### Week 7 (20/05 - 26/05): Final Development and User Testing
 - Finalize documentation and prepare for project deployment.
 - Conduct user acceptance testing and gather feedback for final adjustments.
 - Prepare project presentation and demo to showcase application features and demonstrate the application of data visualization principles.
+
+### Week 8 (27/05 - 02/06): Finalization and Submission
+- Finalize the project report and presentation.
+- Ensure that all documentation is complete and up-to-date.
+- Prepare and rehearse the presentation.
+- Submit the final project deliverables.
