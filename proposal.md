@@ -4,7 +4,7 @@
 
 ## High-level Goal
 
-Our goal in this project is to develop an interactive application that visualizes machine learning algorithm, aiming to create intuitive representations to leverage the learning experience with machine learning.
+Our goal in this project is to make machine learning more inclusive, by developing a simple, automated and interative machine learning pipeline, from data preprocessing, feature engineering,... to model evaluation and development. We hope to be able to leverage the learning experience with machine learning by visualizing machine learning algorithm and creating intuitive understanding.
 
 ## Project Description
 
