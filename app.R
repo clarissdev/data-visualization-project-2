@@ -139,6 +139,7 @@ ui <- navbarPage(
             ),
             actionButton("trainModel", "View Result")
           )
+          # TODO: @Dat: add more conditional panel.
         ),
         mainPanel(
           tableOutput("dataViewer"),
@@ -451,7 +452,7 @@ server <- function(input, output, session) {
         })
       }
     } else if (input$model_type == "Regression") {
-      # Add logic for training and evaluating regression models here
+      # @TODO: Dat: Add logic for training and evaluating regression models here
       # You'll need to choose appropriate libraries and functions for regression
     }
   })
