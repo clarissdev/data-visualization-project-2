@@ -164,31 +164,23 @@ ui <- navbarPage(
         sidebarPanel(
           h4("Model Selection"),
           selectInput(
-            inputId = "model_type",
-            label = "Model Type",
-            choices = c("Classification", "Regression")
+            inputId = "model",
+            label = "Algorithm",
+            choices = c("KNN", "Logistic Regression", "Neural Network", "K-means Clustering", "SVM")
           ),
           conditionalPanel(
-            condition = "input.model_type == 'Classification'",
-            selectInput(
-              inputId = "model",
-              label = "Classification Algorithm",
-              choices = c("KNN", "Logistic Regression", "Neural Network", "K-means Clustering", "SVM")
-            ),
-            conditionalPanel(
-              condition = "input.model == 'KNN'",
-              numericInput(
-                inputId = "k_value",
-                label = "Number of Neighbors (k)",
-                value = 5,  # Default value for k
-                min = 1,    
-                max = 50
-              )
-            ),
-            conditionalPanel(
-              condition = "input.model == 'Logistic Regression'",
-              sliderInput("timeStep", label = "Select Time Step:", min = 1, max = 100, value = 1)
+            condition = "input.model == 'KNN'",
+            numericInput(
+              inputId = "k_value",
+              label = "Number of Neighbors (k)",
+              value = 5,  # Default value for k
+              min = 1,
+              max = 50
             )
+          ),
+          conditionalPanel(
+            condition = "input.model == 'Logistic Regression'",
+            sliderInput("timeStep", label = "Select Time Step:", min = 1, max = 100, value = 1)
           ),
           conditionalPanel(
             condition = "input.model == 'Neural Network'",
@@ -481,7 +473,6 @@ server <- function(input, output, session) {
   observeEvent(input$trainModel, {  # Triggered when training button is clicked
     df <- processed_data()
     
-    if (input$model_type == "Classification") {
       # Classification model training and evaluation
       set.seed(Sys.time())
       
@@ -522,7 +513,7 @@ server <- function(input, output, session) {
                    yaxis = list(title = "Petal Width"),
                    plot_bgcolor = "rgba(240, 240, 240, 0.95)")
         })
-      } else if (input$model == "Neural Network") {
+      } else if (input$model == "Logistic Regression") {
         # Train the Logistic Regression model
         timeStep <- input$timeStep
         
@@ -597,8 +588,7 @@ server <- function(input, output, session) {
           plot_ly(plot_data, x = ~get(input$exp3DXaxisVar), y = ~get(input$exp3DYaxisVar), color = ~df$Cluster, type = 'scatter', mode = 'markers') %>%
             layout(title = "K-means Clustering Results")
         })
-      }
-    } else if (input$model == "Linear Regression") {
+      } else if (input$model == "Linear Regression") {
       # Linear Regression model
       model <- lm(formula = paste(names(df)[ncol(df)], "~."), data = trainData)
       
