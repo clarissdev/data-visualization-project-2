@@ -5,6 +5,7 @@ library(dplyr)
 library(plotly)
 library(GGally)
 library(psych)
+library(nnet)
 
 ui <- navbarPage(
   "Machine Learning Pipeline",
@@ -136,6 +137,10 @@ ui <- navbarPage(
                 min = 1,    
                 max = 50
               )
+            ),
+            conditionalPanel(
+              condition = "input.model == 'Logistic Regression'",
+              sliderInput("timeStep", label = "Select Time Step:", min = 1, max = 100, value = 1)
             ),
             actionButton("trainModel", "View Result")
           )
@@ -423,7 +428,9 @@ server <- function(input, output, session) {
         })
       } else if (input$model == "Logistic Regression") {
         # Train the Logistic Regression model
-        model <- train(Species ~ Petal.Length + Petal.Width, data = trainData, method = 'multinom')
+        timeStep <- input$timeStep
+        
+        model <- multinom(Species ~ Petal.Length + Petal.Width, data = trainData, maxit = timeStep)
         
         # Generate decision boundary plot
         plot_data <- expand.grid(
