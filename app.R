@@ -71,8 +71,7 @@ ui <- navbarPage(
         tags$li("Upload Data: Choose the data you want to use"),
         tags$li("Data Summary: Give an overview by providing a data summary"),
         tags$li("Data Exploration: Preprocess data by deleting/filling NAs and creating simple plots"),
-        tags$li("Build Model: Pick variables, split train/test set, choose algorithms"),
-        tags$li("Evaluation: Evaluate the model performance")
+        tags$li("Build Model: Pick variables, choose algorithms")
       ),
       br(), br()
     )
@@ -101,6 +100,7 @@ ui <- navbarPage(
       )
     )
   ),
+  
   tabPanel(
     "2. Data Summary",
     titlePanel(p("Data Summary")),
@@ -110,6 +110,11 @@ ui <- navbarPage(
         selectInput(inputId = "variable", label = "Select variable for violin plot:", choices = NULL)
       ),
       mainPanel(
+        h4("Introduction"),
+        p("In the data summary step of a machine learning pipeline, it's important to conduct a comprehensive examination of your dataset to ensure its quality and suitability for modeling.
+
+In this case, calculate summary statistics such as mean, median, standard deviation, skewness, and kurtosis for numerical features to get a sense of central tendency and variability. 
+"),
         h4("Summary of Data"),
         tableOutput("dataSummary"),
         br(), br(),
@@ -118,6 +123,7 @@ ui <- navbarPage(
       )
     )
   ),
+  
   tabPanel(
     "3. Data Exploration",
     fluidPage(
@@ -146,12 +152,16 @@ ui <- navbarPage(
           uiOutput("exp3DColorVarSelector")
         ),
         mainPanel(
-          h4("One and Two Variable Plot"),
-          plotlyOutput("expSinglePlot"),
-          h4("Pairs Plot (only non-zero variance variables shown)"),
-          plotlyOutput("expPairsPlot", width = "100%", height = "800px"),
-          h4("3D Scatter Plot"), # New 3D scatter plot
-          plotlyOutput("exp3DPlot")
+        h4("Data Exploration"),
+        p("Data exploration is a critical step in data analysis, where data scientists and analysts examine large datasets to understand their main characteristics before further analysis. This stage, often called exploratory data analysis (EDA), involves using various statistical techniques and data visualization tools to uncover patterns, relationships, and outliers within the data."),
+        p("At this step, for simplicity, we will only show some simple plots and pairplots. The pairplots can help identify the correlations between different variables, while the 1/2/3D plots will help you look at the data from different dimensions."),
+        p("For further steps, please refer to a detailed tutorial: https://www.analyticsvidhya.com/blog/2016/01/guide-data-exploration/"),
+        h4("One and Two Variable Plot"),
+        plotlyOutput("expSinglePlot"),
+        h4("Pairs Plot (only non-zero variance variables shown)"),
+        plotlyOutput("expPairsPlot", width = "100%", height = "800px"),
+        h4("3D Scatter Plot"), # New 3D scatter plot
+        plotlyOutput("exp3DPlot")
         )
       )
     )
