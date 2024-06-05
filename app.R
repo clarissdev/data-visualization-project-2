@@ -208,7 +208,32 @@ ui <- navbarPage(
         ),
         mainPanel(
           tableOutput("dataViewer"),
-          plotlyOutput("plot")
+          plotlyOutput("plot"),
+          h4("Classification"),
+          p("From a business perspective, a classification problem refers to the task of categorizing or classifying data into different groups or classes based on certain characteristics or features. This problem is relevant in various business scenarios where organizations need to make decisions or take actions based on the classification of data."),
+          p("Here are a few examples of how classification problems can be viewed from a business perspective:"),
+          tags$ul(
+            tags$li("Customer Segmentation: Businesses often need to segment their customers into different groups based on their characteristics, behaviors, or preferences. [1]."),
+            tags$li("Fraud Detection: Financial institutions face the challenge of identifying fraudulent transactions or activities. Classification models can be trained on historical data to detect patterns and anomalies associated with fraudulent behavior."),
+            tags$li("Churn Prediction: Customer churn refers to the loss of customers or clients. By analyzing historical data and using classification algorithms, businesses can predict which customers are likely to churn.")
+          ),
+          h4("KNN and Logistic Regression: Simple Algorithms"),
+          p("KNN:"),
+          p("KNN is a simple and intuitive machine learning algorithm that can be used for both classification and regression tasks."),
+          p("KNN looks at the characteristics of the new person (such as age, height, and interests) and compares them to the characteristics of your existing friends."),
+          p("It then finds the K closest friends to the new person based on these characteristics."),
+          p("If most of the K closest friends are your friends, then KNN predicts that the new person is likely to be your friend as well."),
+          p("KNN is based on the idea that similar things are likely to be in the same group or category."),
+          p(HTML("For a deeper understanding of how KNN works: <a href='https://www.youtube.com/watch?v=HVXime0nQeI' target='_blank'>StatQuest: K-nearest neighbors, Clearly Explained</a>")),
+          br(),
+          p("Logistic Regression:"),
+          p("Logistic Regression is another machine learning algorithm that is commonly used for classification tasks [2]."),
+          p("Let's say you want to predict if a student will pass or fail an exam based on their study hours."),
+          p("Logistic Regression looks at the relationship between the study hours and the probability of passing the exam."),
+          p("It calculates a line that best fits the data points, separating the students who pass from those who fail."),
+          p("This line represents the probability threshold. If a student's study hours fall above the line, they are predicted to pass, and if they fall below the line, they are predicted to fail."),
+          p("Logistic Regression is called 'logistic' because it uses a special mathematical function called the logistic function to calculate the probabilities."),
+          p(HTML("For a deeper understanding of how Logistic Regression works, here is a video on LR: <a href='https://www.youtube.com/watch?v=yIYKR4sgzI8&t=192s' target='_blank'>StatQuest: Logistic Regression</a>")),
         )
       )
     )
