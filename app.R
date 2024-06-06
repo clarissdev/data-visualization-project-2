@@ -9,8 +9,6 @@ library(nnet)
 library(dplyr)
 library(caret)
 library(tsne)
-library(glmnetUtils)  # This will automatically load glmnet as well
-
 
 generate_data <- function(n = 200, dimensions = 2, num_classes = 3) {
   set.seed(123)
@@ -73,8 +71,7 @@ ui <- navbarPage(
         tags$li("Upload Data: Choose the data you want to use"),
         tags$li("Data Summary: Give an overview by providing a data summary"),
         tags$li("Data Exploration: Preprocess data by deleting/filling NAs and creating simple plots"),
-        tags$li("Build Model: Pick variables, split train/test set, choose algorithms"),
-        tags$li("Evaluation: Evaluate the model performance")
+        tags$li("Build Model: Pick variables, choose algorithms")
       ),
       br(), br()
     )
@@ -103,6 +100,7 @@ ui <- navbarPage(
       )
     )
   ),
+  
   tabPanel(
     "2. Data Summary",
     titlePanel(p("Data Summary")),
@@ -112,6 +110,11 @@ ui <- navbarPage(
         selectInput(inputId = "variable", label = "Select variable for violin plot:", choices = NULL)
       ),
       mainPanel(
+        h4("Introduction"),
+        p("In the data summary step of a machine learning pipeline, it's important to conduct a comprehensive examination of your dataset to ensure its quality and suitability for modeling.
+
+In this case, calculate summary statistics such as mean, median, standard deviation, skewness, and kurtosis for numerical features to get a sense of central tendency and variability. 
+"),
         h4("Summary of Data"),
         tableOutput("dataSummary"),
         br(), br(),
@@ -120,6 +123,7 @@ ui <- navbarPage(
       )
     )
   ),
+  
   tabPanel(
     "3. Data Exploration",
     fluidPage(
@@ -148,12 +152,16 @@ ui <- navbarPage(
           uiOutput("exp3DColorVarSelector")
         ),
         mainPanel(
-          h4("One and Two Variable Plot"),
-          plotlyOutput("expSinglePlot"),
-          h4("Pairs Plot (only non-zero variance variables shown)"),
-          plotlyOutput("expPairsPlot", width = "100%", height = "800px"),
-          h4("3D Scatter Plot"), # New 3D scatter plot
-          plotlyOutput("exp3DPlot")
+        h4("Data Exploration"),
+        p("Data exploration is a critical step in data analysis, where data scientists and analysts examine large datasets to understand their main characteristics before further analysis. This stage, often called exploratory data analysis (EDA), involves using various statistical techniques and data visualization tools to uncover patterns, relationships, and outliers within the data."),
+        p("At this step, for simplicity, we will only show some simple plots and pairplots. The pairplots can help identify the correlations between different variables, while the 1/2/3D plots will help you look at the data from different dimensions."),
+        p("For further steps, please refer to a detailed tutorial: https://www.analyticsvidhya.com/blog/2016/01/guide-data-exploration/"),
+        h4("One and Two Variable Plot"),
+        plotlyOutput("expSinglePlot"),
+        h4("Pairs Plot (only non-zero variance variables shown)"),
+        plotlyOutput("expPairsPlot", width = "100%", height = "800px"),
+        h4("3D Scatter Plot"), # New 3D scatter plot
+        plotlyOutput("exp3DPlot")
         )
       )
     )
@@ -166,43 +174,33 @@ ui <- navbarPage(
         sidebarPanel(
           h4("Model Selection"),
           selectInput(
-            inputId = "model_type",
-            label = "Model Type",
-            choices = c("Classification", "Regression")
+            inputId = "model",
+            label = "Algorithm",
+            choices = c("KNN", "Logistic Regression", "Neural Network", "K-means Clustering", "SVM")
           ),
           conditionalPanel(
-            condition = "input.model_type == 'Classification'",
-            selectInput(
-              inputId = "model",
-              label = "Classification Algorithm",
-              choices = c("KNN", "Logistic Regression", "K-means Clustering", "SVM")
-            ),
-            conditionalPanel(
-              condition = "input.model == 'KNN'",
-              numericInput(
-                inputId = "k_value",
-                label = "Number of Neighbors (k)",
-                value = 5,  # Default value for k
-                min = 1,    
-                max = 50
-              )
-            ),
-            conditionalPanel(
-              condition = "input.model == 'Logistic Regression'",
-              sliderInput("timeStep", label = "Select Time Step:", min = 1, max = 100, value = 1)
+            condition = "input.model == 'KNN'",
+            numericInput(
+              inputId = "k_value",
+              label = "Number of Neighbors (k)",
+              value = 5,  # Default value for k
+              min = 1,
+              max = 50
             )
+          ),
+          conditionalPanel(
+            condition = "input.model == 'Logistic Regression'",
+            sliderInput("timeStep", label = "Select Time Step:", min = 1, max = 100, value = 1)
+          ),
+          conditionalPanel(
+            condition = "input.model == 'Neural Network'",
+            sliderInput("size", "Number of Hidden Units", min = 1, max = 20, value = 5, step = 1),
+            sliderInput("decay", "Weight Decay", min = 0, max = 1, value = 0.1, step = 0.05),
+            sliderInput("maxit", "Maximum Iterations", min = 100, max = 1000, value = 500, step = 100)
           ),
           conditionalPanel(
             condition = "input.model == 'K-means Clustering'",
             numericInput("clusters", "Number of Clusters", min = 2, max = 10, value = 3)
-          ),
-          conditionalPanel(
-            condition = "input.model_type == 'Regression'",
-            selectInput(
-              inputId = "regression_model",
-              label = "Regression Algorithm",
-              choices = c("Linear Regression")
-            )
           ),
           actionButton("trainModel", "Train Model")
         ),
@@ -234,6 +232,46 @@ ui <- navbarPage(
           p("This line represents the probability threshold. If a student's study hours fall above the line, they are predicted to pass, and if they fall below the line, they are predicted to fail."),
           p("Logistic Regression is called 'logistic' because it uses a special mathematical function called the logistic function to calculate the probabilities."),
           p(HTML("For a deeper understanding of how Logistic Regression works, here is a video on LR: <a href='https://www.youtube.com/watch?v=yIYKR4sgzI8&t=192s' target='_blank'>StatQuest: Logistic Regression</a>")),
+        )
+      )
+    )
+  ),
+  tabPanel(
+    "5. High Dimensional Data",
+    fluidPage(
+      titlePanel(p("High Dimensional Data")),
+      sidebarLayout(
+        sidebarPanel(
+          h4("Model Selection"),
+          selectInput(
+            inputId = "md",
+            label = "Model Type",
+            choices = c("Neural Network", "SVM", "K-means")
+          ),
+          conditionalPanel(
+            condition = "input.md == 'K-means'",
+            numericInput("classes", "Number of Classes", min = 2, max = 5, value = 3, step = 1),
+            numericInput("dimensions", "Number of Dimensions", min = 2, max = 50, value = 2, step = 1),
+            numericInput("clusters", "Number of Clusters", min = 2, max = 10, value = 3)
+          ),
+          conditionalPanel(
+            condition = "input.md == 'Neural Network'",
+            numericInput("classes", "Number of Classes", min = 2, max = 5, value = 3, step = 1),
+            numericInput("dimensions", "Number of Dimensions", min = 2, max = 50, value = 2, step = 1),
+            sliderInput("size", "Number of Hidden Units", min = 1, max = 20, value = 5, step = 1),
+            sliderInput("decay", "Weight Decay", min = 0, max = 1, value = 0.1, step = 0.05),
+            sliderInput("maxit", "Maximum Iterations", min = 100, max = 1000, value = 500, step = 100),
+          ),
+          conditionalPanel(
+            condition = "input.md == 'SVM'",
+            numericInput("classes", "Number of Classes", min = 2, max = 5, value = 3, step = 1),
+            numericInput("dimensions", "Number of Dimensions", min = 2, max = 50, value = 2, step = 1),
+            numericInput("clusters", "Number of Clusters", min = 2, max = 10, value = 3)
+          ),
+          actionButton("tsne", "Visualize")
+        ),
+        mainPanel(
+          plotlyOutput("nnPlot")
         )
       )
     )
@@ -510,7 +548,6 @@ server <- function(input, output, session) {
   observeEvent(input$trainModel, {  # Triggered when training button is clicked
     df <- processed_data()
     
-    if (input$model_type == "Classification") {
       # Classification model training and evaluation
       set.seed(Sys.time())
       
@@ -582,158 +619,126 @@ server <- function(input, output, session) {
                    yaxis = list(title = "Petal Width"),
                    plot_bgcolor = "rgba(240, 240, 240, 0.95)")
         })
-    } else if (input$model == "Neural Network") {
-      # Neural Network training
-      size <- input$size  # user-defined number of hidden units
-      decay <- input$decay  # regularization term to prevent overfitting
-      maxit <- input$maxit  # maximum iterations
-      # Now train the neural network
-      # Adjust the neural network training call
-      library(neuralnet)
-      model <- neuralnet(
-        Species ~ Sepal.Length + Sepal.Width,
-        data = trainData,
-        hidden = c(size, size),  # two hidden layers with 'size' units each
-        linear.output = FALSE,  # FALSE for classification
-        threshold = 0.01
-      )
-      
-      # Predicting and plotting results
-      output$plot <- renderPlotly({
-        nn_data <- trainData
-        nn_predictions <- compute(model, nn_data[, c("Sepal.Length", "Sepal.Width")])
-        nn_data$Prediction <- as.numeric(nn_predictions$net.result > 0.5)  # Assuming binary classification, adjust threshold as necessary
+    } else if (input$model == "SVM") {
+        # SVM
+        model <- train(Species ~ Petal.Length + Petal.Width, data = trainData, method = "svmRadial")
         
-        plot_ly(nn_data, x = ~Sepal.Length, y = ~Sepal.Width, color = ~factor(Prediction), type = 'scatter', mode = 'markers') %>%
-          layout(title = "Neural Network Classification Results",
-                 xaxis = list(title = "Sepal Length"),
-                 yaxis = list(title = "Sepal Width"))
-      })
-    }else if (input$model == "SVM") {
-      # Train the SVM model
-      model <- caret::train(Species ~ Petal.Length + Petal.Width, data = trainData, method = "svmRadial", trControl = trainControl(method = "cv"))
-      plot_data <- expand.grid(
-        Petal.Length = seq(min(df$Petal.Length), max(df$Petal.Length), length.out = 100),
-        Petal.Width = seq(min(df$Petal.Width), max(df$Petal.Width), length.out = 100)
-      )
-      plot_data$Prediction <- predict(model, newdata = plot_data)
+        # Generate decision boundary plot
+        plot_data <- expand.grid(
+          Petal.Length = seq(min(df$Petal.Length), max(df$Petal.Length), length.out = 100),
+          Petal.Width = seq(min(df$Petal.Width), max(df$Petal.Width), length.out = 100)
+        )
+        plot_data$Prediction <- predict(model, newdata = plot_data)
+        
+        output$plot <- renderPlotly({
+          plot_ly() %>%
+            add_markers(data = df, x = ~Petal.Length, y = ~Petal.Width, color = ~Species, colors = c("#eb3527", "#387e22", "#f3aa3c"), marker = list(size = 8)) %>%
+            add_trace(
+              data = plot_data,
+              x = ~Petal.Length,
+              y = ~Petal.Width,
+              z = ~as.numeric(factor(Prediction)),
+              type = 'heatmap',
+              showscale = FALSE,
+              colorscale = list(c(0, '#f9e0e0'), c(0.5, '#e0edde'), c(1, '#fef6e5')),
+              opacity = 1
+            ) %>%
+            layout(title = "SVM Decision Boundary",
+                   xaxis = list(title = "Petal Length"),
+                   yaxis = list(title = "Petal Width"),
+                   plot_bgcolor = "rgba(240, 240, 240, 0.95)")
+        })
+      } else if (input$model == "K-means Clustering") {
+        
+        # Set up and run the K-means model
+        clusters <- input$clusters  # user-defined number of clusters
+        kmeans_model <- kmeans(trainData, centers = clusters, nstart = 25)
+        
+        
+        # Update UI to reflect clustering, here using a simple plot or other appropriate output
+        output$plot <- renderPlotly({
+          plot_data <- df[, c(input$exp3DXaxisVar, input$exp3DYaxisVar)]
+          plot_data <- plot_data[complete.cases(plot_data), ]  # Remove rows with missing values
+          
+          plot_ly(plot_data, x = ~get(input$exp3DXaxisVar), y = ~get(input$exp3DYaxisVar), color = ~df$Cluster, type = 'scatter', mode = 'markers') %>%
+            layout(title = "K-means Clustering Results")
+        })
+      } else if (input$model == "Linear Regression") {
+      # Linear Regression model
+      model <- lm(formula = paste(names(df)[ncol(df)], "~."), data = trainData)
       
-      # Plot results
+      # Generate scatter plot with regression line
       output$plot <- renderPlotly({
-        plot_ly() %>%
-          add_markers(data = df, x = ~Petal.Length, y = ~Petal.Width, color = ~Species, colors = c("#eb3527", "#387e22", "#f3aa3c"), marker = list(size = 8)) %>%
-          add_trace(
-            data = plot_data,
-            x = ~Petal.Length,
-            y = ~Petal.Width,
-            z = ~as.numeric(factor(Prediction)),
-            type = 'heatmap',
-            showscale = FALSE,
-            colorscale = list(c(0, '#f9e0e0'), c(0.5, '#e0edde'), c(1, '#fef6e5')),
-            opacity = 1
-          ) %>%
-          layout(title = "SVM Decision Boundary",
+        plot_data <- expand.grid(trainData[, -ncol(trainData)])
+        plot_data$Prediction <- predict(model, newdata = plot_data)
+        
+        plot_ly(trainData, x = ~Petal.Length, y = ~Sepal.Length) %>%
+          add_markers() %>%
+          add_lines(data = plot_data, x = ~Petal.Length, y = ~Prediction, color = "red", line = list(width = 2)) %>%
+          layout(title = "Linear Regression",
                  xaxis = list(title = "Petal Length"),
-                 yaxis = list(title = "Petal Width"),
+                 yaxis = list(title = "Sepal Length"),
                  plot_bgcolor = "rgba(240, 240, 240, 0.95)")
       })
-    } else if (input$model == "K-means Clustering") {
-      # Train the K-means model
-      clusters <- as.integer(input$clusters)
-      kmeans_model <- kmeans(trainData[, c("Petal.Length", "Petal.Width")], centers = clusters, nstart = 50)
-      
-      # Define colors for each cluster
-      cluster_colors <- c("#eb3527", "#387e22", "#f3aa3c")
-      
-      # Ensure that the number of clusters doesn't exceed the available colors
-      if(clusters > length(cluster_colors)) {
-        stop("Number of clusters exceeds the number of defined colors.")
-      }
-      
-      # Apply colors based on the cluster indices assigned by kmeans
-      data_colors <- cluster_colors[kmeans_model$cluster]
-      center_colors <- cluster_colors[1:clusters]
-      
-      # Plot results with cluster centers
-      output$plot <- renderPlotly({
-        # Plot actual data points with colors based on cluster assignment
-        p <- plot_ly(trainData, x = ~Petal.Length, y = ~Petal.Width, type = 'scatter', mode = 'markers',
-                     marker = list(color = data_colors, size = 8)) %>%
-          layout(title = "K-means Clustering",
-                 xaxis = list(title = "Petal Length"),
-                 yaxis = list(title = "Petal Width"))
-        
-        # Add cluster centers to the plot
-        p <- add_trace(p, x = ~kmeans_model$centers[, "Petal.Length"], y = ~kmeans_model$centers[, "Petal.Width"], 
-                       mode = 'markers', marker = list(size = 12, color = center_colors, symbol = 'cross'),
-                       name = 'Centers')
-        
-        p
-      })
     }
-    } else if (input$model_type == "Regression") {
-      req(df)
-      
-      # Debugging output
-      print("Checking df structure:")
-      str(df)
-      
-      # Splitting data
-      set.seed(123)
-      trainIndex <- createDataPartition(df$Petal.Width, p = 0.7, list = FALSE)
-      trainData <- df[trainIndex, , drop = FALSE]
-      testData <- df[-trainIndex, , drop = FALSE]
-      
-      # Debugging output
-      print("Checking trainData structure:")
-      str(trainData)
-      
-      # Ensure data frames
-      if (!is.data.frame(trainData) || !is.data.frame(testData)) {
-        stop("trainData or testData is not a data frame.")
+  })
+  
+  observeEvent(input$tsne, {  # Triggered when training button is clicked
+    data <- reactive({
+      generate_data(200, input$dimensions, input$classes)
+    })
+    
+    trained_model <- reactiveVal(NULL)
+    tsne_data <- reactiveVal(NULL)
+    
+
+    generated_data <- data()
+    # Apply appropriate model based on selected method
+    if (input$md == "Neural Network") {
+        model <- multinom(y ~ ., data = generated_data, decay = input$decay, maxit = input$maxit)
+      } else if (input$md == "K-means") {
+        model <- kmeans(generated_data[, 1:input$dimensions], centers = input$clusters)
+        generated_data$y <- factor(model$cluster)  # Update data with cluster labels
+      } else if (input$md == "SVM") {
+        model <- svm(y ~ ., data = generated_data, type = 'C-classification', kernel = 'radial')
       }
-      
-      formula <- Petal.Width ~ Petal.Length
-      
-      if (input$regression_model == "Linear Regression") {
-        model <- lm(formula, data = trainData)
-      } else {
-        x_train <- model.matrix(~ Petal.Width, data = trainData)[, -1]  # Assuming you're using 'Petal.Length' as a predictor
-        y_train <- model.matrix(~ Petal.Length, data = trainData)[, -1]
-        print("X TRAIN", str(x_train))
-        print("Y trAIN", str(y_train))
-        if (input$regression_model == "Ridge") {
-          model <- glmnet(x_train, y_train, alpha = 0, lambda = as.numeric(input$lambda))
-        } else if (input$regression_model == "Lasso") {
-          model <- glmnet(x_train, y_train, alpha = 1, lambda = as.numeric(input$lambda))
-        } else if (input$regression_model == "Elastic Net") {
-          model <- glmnet(x_train, y_train, alpha = input$alpha, lambda = as.numeric(input$lambda))
-        }
-      }
-      
-      # Handling predictions
-      if ("glmnet" %in% class(model)) {
-        x_test <- model.matrix(formula, data = testData)[, -1]  # Consistent with training data
-        predictions <- predict(model, newx = x_test, s = as.numeric(input$lambda), type = "response")
-      } else {
-        predictions <- predict(model, newdata = testData)
-      }
-      
-      if (is.matrix(predictions)) {
-        predictions <- predictions[,1]  # Assuming we want the first column
-      }
-      
-      # Debugging output
-      print("Checking predictions:")
-      print(head(predictions))
-      
-      # Plotting
-      output$plot <- renderPlotly({
-        plot_ly(x = testData$Petal.Length, y = testData$Petal.Width, type = 'scatter', mode = 'markers', name = 'Actual') %>%
-          add_trace(x = testData$Petal.Length, y = predictions, type = 'scatter', mode = 'lines', name = 'Predicted') %>%
-          layout(title = "Regression Model Results", xaxis = list(title = "Petal Length"), yaxis = list(title = "Petal Width"))
-      })
+    trained_model(model)
+        
+    # Determine if t-SNE is needed based on dimensions
+    if (input$dimensions > 3) {
+      tsne_results <- perform_tsne(generated_data[, 1:input$dimensions], 3)  # Reduce to 3D for visualization
+      colnames(tsne_results) <- c("X1", "X2", "X3")
+      tsne_results$y <- generated_data$y  # Attach 'y' after t-SNE
+      tsne_data(tsne_results)
+    } else {
+      # Set correct column names for the dimensions provided
+      colnames(generated_data)[1:input$dimensions] <- paste0("X", 1:input$dimensions)
+      tsne_data(generated_data)
     }
+
+    
+    output$nnPlot <- renderPlotly({
+      req(tsne_data())
+      plot_data <- tsne_data()
+      
+      if (input$dimensions == 3) {
+        # 3D visualization for exactly three dimensions
+        plot <- plot_ly(plot_data, x = ~X1, y = ~X2, z = ~X3, color = ~y, type = 'scatter3d', mode = 'markers') %>%
+          layout(title = "3D Visualization of Classification",
+                 scene = list(xaxis = list(title = 'Dimension 1'), yaxis = list(title = 'Dimension 2'), zaxis = list(title = 'Dimension 3')))
+      } else if (input$dimensions == 2) {
+        # 2D visualization for exactly two dimensions
+        plot <- plot_ly(plot_data, x = ~X1, y = ~X2, color = ~y, type = 'scatter', mode = 'markers') %>%
+          layout(title = "2D Visualization of Classification",
+                 xaxis = list(title = 'Dimension 1'), yaxis = list(title = 'Dimension 2'))
+      } else {
+        # Default to 3D visualization if dimensions are more than three
+        plot <- plot_ly(plot_data, x = ~X1, y = ~X2, z = ~X3, color = ~y, type = 'scatter3d', mode = 'markers') %>%
+          layout(title = "3D Visualization of Multi-Class Classification",
+                 scene = list(xaxis = list(title = 'Dimension 1'), yaxis = list(title = 'Dimension 2'), zaxis = list(title = 'Dimension 3')))
+      }
+      plot
+    })
   })
   
   observeEvent(input$tsne, {  # Triggered when training button is clicked
@@ -796,4 +801,3 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui = ui, server = server)
-
