@@ -206,7 +206,72 @@ In this case, calculate summary statistics such as mean, median, standard deviat
         ),
         mainPanel(
           tableOutput("dataViewer"),
-          plotlyOutput("plot")
+          plotlyOutput("plot"),
+          h4("Classification"),
+          p("From a business perspective, a classification problem refers to the task of categorizing or classifying data into different groups or classes based on certain characteristics or features. This problem is relevant in various business scenarios where organizations need to make decisions or take actions based on the classification of data."),
+          p("Here are a few examples of how classification problems can be viewed from a business perspective:"),
+          tags$ul(
+            tags$li("Customer Segmentation: Businesses often need to segment their customers into different groups based on their characteristics, behaviors, or preferences. [1]."),
+            tags$li("Fraud Detection: Financial institutions face the challenge of identifying fraudulent transactions or activities. Classification models can be trained on historical data to detect patterns and anomalies associated with fraudulent behavior."),
+            tags$li("Churn Prediction: Customer churn refers to the loss of customers or clients. By analyzing historical data and using classification algorithms, businesses can predict which customers are likely to churn.")
+          ),
+          h4("KNN and Logistic Regression: Simple Algorithms"),
+          p("KNN:"),
+          p("KNN is a simple and intuitive machine learning algorithm that can be used for both classification and regression tasks."),
+          p("KNN looks at the characteristics of the new person (such as age, height, and interests) and compares them to the characteristics of your existing friends."),
+          p("It then finds the K closest friends to the new person based on these characteristics."),
+          p("If most of the K closest friends are your friends, then KNN predicts that the new person is likely to be your friend as well."),
+          p("KNN is based on the idea that similar things are likely to be in the same group or category."),
+          p(HTML("For a deeper understanding of how KNN works: <a href='https://www.youtube.com/watch?v=HVXime0nQeI' target='_blank'>StatQuest: K-nearest neighbors, Clearly Explained</a>")),
+          br(),
+          p("Logistic Regression:"),
+          p("Logistic Regression is another machine learning algorithm that is commonly used for classification tasks [2]."),
+          p("Let's say you want to predict if a student will pass or fail an exam based on their study hours."),
+          p("Logistic Regression looks at the relationship between the study hours and the probability of passing the exam."),
+          p("It calculates a line that best fits the data points, separating the students who pass from those who fail."),
+          p("This line represents the probability threshold. If a student's study hours fall above the line, they are predicted to pass, and if they fall below the line, they are predicted to fail."),
+          p("Logistic Regression is called 'logistic' because it uses a special mathematical function called the logistic function to calculate the probabilities."),
+          p(HTML("For a deeper understanding of how Logistic Regression works, here is a video on LR: <a href='https://www.youtube.com/watch?v=yIYKR4sgzI8&t=192s' target='_blank'>StatQuest: Logistic Regression</a>")),
+        )
+      )
+    )
+  ),
+  tabPanel(
+    "5. High Dimensional Data",
+    fluidPage(
+      titlePanel(p("High Dimensional Data")),
+      sidebarLayout(
+        sidebarPanel(
+          h4("Model Selection"),
+          selectInput(
+            inputId = "md",
+            label = "Model Type",
+            choices = c("Neural Network", "SVM", "K-means")
+          ),
+          conditionalPanel(
+            condition = "input.md == 'K-means'",
+            numericInput("classes", "Number of Classes", min = 2, max = 5, value = 3, step = 1),
+            numericInput("dimensions", "Number of Dimensions", min = 2, max = 50, value = 2, step = 1),
+            numericInput("clusters", "Number of Clusters", min = 2, max = 10, value = 3)
+          ),
+          conditionalPanel(
+            condition = "input.md == 'Neural Network'",
+            numericInput("classes", "Number of Classes", min = 2, max = 5, value = 3, step = 1),
+            numericInput("dimensions", "Number of Dimensions", min = 2, max = 50, value = 2, step = 1),
+            sliderInput("size", "Number of Hidden Units", min = 1, max = 20, value = 5, step = 1),
+            sliderInput("decay", "Weight Decay", min = 0, max = 1, value = 0.1, step = 0.05),
+            sliderInput("maxit", "Maximum Iterations", min = 100, max = 1000, value = 500, step = 100),
+          ),
+          conditionalPanel(
+            condition = "input.md == 'SVM'",
+            numericInput("classes", "Number of Classes", min = 2, max = 5, value = 3, step = 1),
+            numericInput("dimensions", "Number of Dimensions", min = 2, max = 50, value = 2, step = 1),
+            numericInput("clusters", "Number of Clusters", min = 2, max = 10, value = 3)
+          ),
+          actionButton("tsne", "Visualize")
+        ),
+        mainPanel(
+          plotlyOutput("nnPlot")
         )
       )
     )
@@ -616,6 +681,64 @@ server <- function(input, output, session) {
                  plot_bgcolor = "rgba(240, 240, 240, 0.95)")
       })
     }
+  })
+  
+  observeEvent(input$tsne, {  # Triggered when training button is clicked
+    data <- reactive({
+      generate_data(200, input$dimensions, input$classes)
+    })
+    
+    trained_model <- reactiveVal(NULL)
+    tsne_data <- reactiveVal(NULL)
+    
+
+    generated_data <- data()
+    # Apply appropriate model based on selected method
+    if (input$md == "Neural Network") {
+        model <- multinom(y ~ ., data = generated_data, decay = input$decay, maxit = input$maxit)
+      } else if (input$md == "K-means") {
+        model <- kmeans(generated_data[, 1:input$dimensions], centers = input$clusters)
+        generated_data$y <- factor(model$cluster)  # Update data with cluster labels
+      } else if (input$md == "SVM") {
+        model <- svm(y ~ ., data = generated_data, type = 'C-classification', kernel = 'radial')
+      }
+    trained_model(model)
+        
+    # Determine if t-SNE is needed based on dimensions
+    if (input$dimensions > 3) {
+      tsne_results <- perform_tsne(generated_data[, 1:input$dimensions], 3)  # Reduce to 3D for visualization
+      colnames(tsne_results) <- c("X1", "X2", "X3")
+      tsne_results$y <- generated_data$y  # Attach 'y' after t-SNE
+      tsne_data(tsne_results)
+    } else {
+      # Set correct column names for the dimensions provided
+      colnames(generated_data)[1:input$dimensions] <- paste0("X", 1:input$dimensions)
+      tsne_data(generated_data)
+    }
+
+    
+    output$nnPlot <- renderPlotly({
+      req(tsne_data())
+      plot_data <- tsne_data()
+      
+      if (input$dimensions == 3) {
+        # 3D visualization for exactly three dimensions
+        plot <- plot_ly(plot_data, x = ~X1, y = ~X2, z = ~X3, color = ~y, type = 'scatter3d', mode = 'markers') %>%
+          layout(title = "3D Visualization of Classification",
+                 scene = list(xaxis = list(title = 'Dimension 1'), yaxis = list(title = 'Dimension 2'), zaxis = list(title = 'Dimension 3')))
+      } else if (input$dimensions == 2) {
+        # 2D visualization for exactly two dimensions
+        plot <- plot_ly(plot_data, x = ~X1, y = ~X2, color = ~y, type = 'scatter', mode = 'markers') %>%
+          layout(title = "2D Visualization of Classification",
+                 xaxis = list(title = 'Dimension 1'), yaxis = list(title = 'Dimension 2'))
+      } else {
+        # Default to 3D visualization if dimensions are more than three
+        plot <- plot_ly(plot_data, x = ~X1, y = ~X2, z = ~X3, color = ~y, type = 'scatter3d', mode = 'markers') %>%
+          layout(title = "3D Visualization of Multi-Class Classification",
+                 scene = list(xaxis = list(title = 'Dimension 1'), yaxis = list(title = 'Dimension 2'), zaxis = list(title = 'Dimension 3')))
+      }
+      plot
+    })
   })
   
   observeEvent(input$tsne, {  # Triggered when training button is clicked
